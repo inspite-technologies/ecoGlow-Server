@@ -16,7 +16,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // --- ROUTES ---
-router.get('/', getMessagePage);
+router.get('/',getMessagePage);
 router.post('/', upload.any(),protectAdmin,saveMessagePage); 
 
 export default router;
