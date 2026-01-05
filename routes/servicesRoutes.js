@@ -5,7 +5,7 @@ import protectAdmin from './middleWare/adminMiddleWare.js';
 
 const app = express.Router();
 
-app.get('/',protectAdmin, getServicesSection);
+app.get('/', getServicesSection);
 
 app.post('/', upload.any(),protectAdmin, createServicesSection);
 app.put('/', upload.any(),protectAdmin, updateServicesSection);

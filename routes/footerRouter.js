@@ -4,7 +4,7 @@ import protectAdmin from './middleWare/adminMiddleWare.js';
 const router = express.Router();
 
 router.route('/')
-  .get(protectAdmin,getFooter)
+  .get(getFooter)
   .post(protectAdmin,upsertFooter);
 
 export default router;

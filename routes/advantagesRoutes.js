@@ -17,6 +17,6 @@ const upload = multer({ storage: storage });
 
 // ---------------- ROUTES ----------------
 app.route("/").post(upload.any(),protectAdmin,saveAdvantagesPage);
-app.route("/").get(protectAdmin,getAdvantagesPage);
+app.route("/").get(getAdvantagesPage);
 
 export default app;

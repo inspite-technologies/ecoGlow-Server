@@ -6,7 +6,7 @@ import multer from "../config/multer.js";
 const router = express.Router();
 
 // GET  /contact -> Fetch data
-router.get("/",protectAdmin, getContactPage);
+router.get("/", getContactPage);
 
 // PUT  /contact -> Create OR Update (Upsert)
 router.put("/", multer.single("bannerImage"),protectAdmin, updateContactPage);

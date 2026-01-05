@@ -15,7 +15,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 // ---------------- ROUTES ----------------
-app.route("/").get(protectAdmin,getServicesPage);
+app.route("/").get(getServicesPage);
 app.route("/").post(
   upload.fields([
     { name: "card1Image", maxCount: 1 },
