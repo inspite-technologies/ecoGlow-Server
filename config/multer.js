@@ -1,34 +1,30 @@
+import { v2 as cloudinary } from 'cloudinary';
+import { CloudinaryStorage } from 'multer-storage-cloudinary';
 import multer from 'multer';
-import fs from 'fs';
-import path from 'path';
+import dotenv from 'dotenv';
 
-// Ensure folder exists
-const ensureDir = (dir) => {
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-};
+dotenv.config();
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    if (file.fieldname === 'bannerImage') {
-      ensureDir('uploads/banners');
-      cb(null, 'uploads/banners');
-    } else if (file.fieldname.startsWith('itemIcon_')) {
-      ensureDir('uploads/icons');
-      cb(null, 'uploads/icons');
-    } else if (file.fieldname.startsWith('itemImage_')) {
-      ensureDir('uploads/items');
-      cb(null, 'uploads/items');
-    } else {
-      ensureDir('uploads/others');
-      cb(null, 'uploads/others');
-    }
-  },
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    const uniqueName = `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;
-    cb(null, uniqueName);
-  }
+// Ensure these are set in your Render Environment Variables
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-const upload = multer({ storage });
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: async (req, file) => {
+    // Optional: Organize files into folders on Cloudinary based on the route
+    // You can customize this logic if you want specific folders for specific routes
+    return {
+      folder: 'eco-glow-uploads', // The folder name in your Cloudinary dashboard
+      resource_type: 'auto',      // Auto-detect (image, video, etc.)
+      public_id: `${Date.now()}-${file.originalname.split('.')[0]}`,
+    };
+  },
+});
+
+const upload = multer({ storage: storage });
+
 export default upload;

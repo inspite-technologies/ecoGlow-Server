@@ -22,7 +22,7 @@ const app = express();
 
 const corsOptions = {
  origin: [
-    "https://ecoglow-r8v4.vercel.app" ],
+    "http://localhost:5173" ],
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
 };

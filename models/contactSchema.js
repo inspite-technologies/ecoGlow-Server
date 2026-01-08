@@ -17,6 +17,15 @@ const contactPageSchema = new mongoose.Schema({
     email: { type: String, default: "info@ecoglow.ae" }
   },
 
+  // Social Media Links - NEW SECTION
+  socialLinks: {
+    facebook: { type: String, default: "#" },
+    instagram: { type: String, default: "#" },
+    youtube: { type: String, default: "#" },
+    twitter: { type: String, default: "#" }, // Added as an extra option
+    linkedin: { type: String, default: "#" } // Added as an extra option
+  },
+
   // Map
   mapEmbedUrl: { type: String },
 }, { timestamps: true });
