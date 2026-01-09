@@ -5,7 +5,8 @@ const Schema = mongoose.Schema;
 const BannerSchema = new Schema(
   {
     text: { type: String, default: "" },
-    image: { type: String, default: null },
+    beforeImage: { type: String, default: null }, // Renamed from image
+    afterImage: { type: String, default: null },  // New field
   },
   { timestamps: true }
 );

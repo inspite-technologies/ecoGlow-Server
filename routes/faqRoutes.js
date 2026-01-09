@@ -1,7 +1,7 @@
 import { createFaqPage, getFaqPage, updateFaqPage } from "../controllers/faqController.js";
 import protectAdmin from "./middleWare/adminMiddleWare.js";
 import express from "express";
-import upload from "../config/multer.js"; // Import the new middleware
+import upload from "../config/multer.js"; 
 
 const app = express.Router();
 

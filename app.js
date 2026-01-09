@@ -15,6 +15,7 @@ import contactRoutes from "./routes/contactRoutes.js"
 import adminRoutes from "./routes/adminRoutes.js";
 import bookingRoutes from "./routes/bookingRoutes.js"
 import footerRoutes from "./routes/footerRouter.js"
+import commercialRoutes from "./routes/commercialRoutes.js"
 import cors from "cors";
 import path from "path";
 
@@ -22,7 +23,7 @@ const app = express();
 
 const corsOptions = {
  origin: [
-    "https://ecoglow-r8v4.vercel.app" ],
+    'http://localhost:5173' ],
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
 };
@@ -41,6 +42,7 @@ app.get("/", (req, res) => {
 
 app.use("/about-us", aboutUsRoutes);
 app.use("/services", servicesRoutes);
+app.use("/services/commercial",commercialRoutes)
 app.use("/packages", packagesRoutes);
 app.use("/faq", faqRoutes);
 app.use("/hero", heroRoutes);
@@ -53,6 +55,7 @@ app.use("/admin", adminRoutes);
 app.use("/contact",contactRoutes)
 app.use("/bookings",bookingRoutes)
 app.use("/footer",footerRoutes)
+
 
 app.listen(PORT, () => {
   console.log(`Server running on ${PORT}`);

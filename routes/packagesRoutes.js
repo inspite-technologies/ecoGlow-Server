@@ -6,8 +6,7 @@ import protectAdmin from "./middleWare/adminMiddleWare.js";
 
 const app = express.Router();
 
-// ---------------- ROUTES ----------------
-// Usage: upload.any() now streams to Cloudinary automatically
+
 app.route("/").post(upload.any(), protectAdmin, createPackages);
 app.route("/").put(upload.any(), protectAdmin, updatePackages);
 app.route("/").get(getPackages);

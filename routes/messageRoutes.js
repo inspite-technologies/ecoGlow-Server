@@ -1,5 +1,5 @@
 import express from 'express';
-import upload from '../config/multer.js'; // Import the new middleware
+import upload from '../config/multer.js'; 
 import { getMessagePage, saveMessagePage } from '../controllers/messageController.js';
 import protectAdmin from './middleWare/adminMiddleWare.js';
 

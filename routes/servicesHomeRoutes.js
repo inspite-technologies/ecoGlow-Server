@@ -1,5 +1,4 @@
 import express from "express";
-// Import the NEW unified middleware
 import upload from "../config/multer.js";
 import { saveServicesPage, getServicesPage } from "../controllers/servicesHomeController.js";
 import protectAdmin from "./middleWare/adminMiddleWare.js";

@@ -14,15 +14,15 @@ const getFooter = async (req, res) => {
   }
 };
 
-// UPSERT FOOTER DATA (Create or Update)
 const upsertFooter = async (req, res) => {
   try {
     const updateData = {
       officeAddress: req.body.officeAddress,
+      mapLink: req.body.mapLink, // 👈 ADD THIS LINE
       phone: req.body.phone,
       whatsapp: req.body.whatsapp,
       email: req.body.email,
-      usefulLinks: req.body.usefulLinks, // Expected as an array of {label, url}
+      usefulLinks: req.body.usefulLinks, 
       socialLinks: {
         facebook: req.body.facebook,
         instagram: req.body.instagram,
@@ -31,7 +31,6 @@ const upsertFooter = async (req, res) => {
       copyrightText: req.body.copyrightText,
     };
 
-    // {} as first param finds the first doc, upsert: true creates it if missing
     const footer = await Footer.findOneAndUpdate({}, updateData, {
       upsert: true,
       new: true,
@@ -48,5 +47,4 @@ const upsertFooter = async (req, res) => {
       .json({ message: "Error saving footer", error: error.message });
   }
 };
-
 export { getFooter, upsertFooter };
