@@ -5,6 +5,6 @@ import upload from '../config/multer.js';
 const router = express.Router();
 
 router.get('/', getHeaderSettings);
-router.put('/', upload.single('logo'), updateHeaderSettings);
+router.put('/', updateHeaderSettings);
 
 export default router;

@@ -1,5 +1,6 @@
 import HeaderSettings from "../models/headerSchema.js";
 
+// --- GET ---
 export const getHeaderSettings = async (req, res) => {
   try {
     const settings = await HeaderSettings.findOne();
@@ -9,31 +10,26 @@ export const getHeaderSettings = async (req, res) => {
   }
 };
 
+// --- UPDATE ---
 export const updateHeaderSettings = async (req, res) => {
   try {
-    const { contactWhatsApp, contactPhone, navLinks, servicesDropdown } = req.body;
+    const { contactWhatsApp, contactPhone } = req.body;
     
-    let updateData = {
+    // Only update these two fields
+    const updateData = {
       contactWhatsApp,
-      contactPhone,
-      // Parse JSON strings if coming from FormData
-      navLinks: typeof navLinks === 'string' ? JSON.parse(navLinks) : navLinks,
-      servicesDropdown: typeof servicesDropdown === 'string' ? JSON.parse(servicesDropdown) : servicesDropdown,
+      contactPhone
     };
-
-    // Handle logo upload if provided
-    if (req.file) {
-      updateData.logo = req.file.path;
-    }
 
     const updated = await HeaderSettings.findOneAndUpdate(
       {}, 
       { $set: updateData },
-      { new: true, upsert: true }
+      { new: true, upsert: true, setDefaultsOnInsert: true }
     );
 
-    res.status(200).json({ success: true, data: updated });
+    res.status(200).json({ success: true, message: "Contacts updated", data: updated });
   } catch (error) {
+    console.error("Update Error:", error);
     res.status(500).json({ success: false, message: error.message });
   }
 };
