@@ -18,44 +18,55 @@ export const saveMessagePage = async (req, res) => {
       mdTitle,
       mdMessage,
       mdName,
+      gratitudeText,      // <--- 1. Capture new field here
       connectTitle,
-      connectSubtitle
+      connectSubtitle,
+      removePhoto,        // Captured from frontend formData
+      removeSignature     // Captured from frontend formData
     } = req.body;
 
-    // Handle File Upload
-    let mdPhotoPath = null;
-    if (req.files && req.files.length > 0) {
-      // Assuming single file upload for mdPhoto
-      mdPhotoPath = req.files[0].path; 
-    }
-
-    // Try to find existing document
     let pageData = await MessagePage.findOne();
 
-    if (pageData) {
-      // UPDATE existing
-      if (mdTitle) pageData.mdTitle = mdTitle;
-      if (mdMessage) pageData.mdMessage = mdMessage;
-      if (mdName) pageData.mdName = mdName;
-      if (connectTitle) pageData.connectTitle = connectTitle;
-      if (connectSubtitle) pageData.connectSubtitle = connectSubtitle;
-      if (mdPhotoPath) pageData.mdPhoto = mdPhotoPath;
-      
-      await pageData.save();
-    } else {
-      // CREATE new
+    if (!pageData) {
+      // Logic for CREATE new
       pageData = new MessagePage({
         mdTitle,
         mdMessage,
         mdName,
+        gratitudeText,    // <--- 2. Add to creation object
         connectTitle,
-        connectSubtitle,
-        mdPhoto: mdPhotoPath
+        connectSubtitle
       });
-      await pageData.save();
+    } else {
+      // UPDATE existing text fields
+      if (mdTitle !== undefined) pageData.mdTitle = mdTitle;
+      if (mdMessage !== undefined) pageData.mdMessage = mdMessage;
+      if (mdName !== undefined) pageData.mdName = mdName;
+      if (gratitudeText !== undefined) pageData.gratitudeText = gratitudeText; // <--- 3. Add to update logic
+      if (connectTitle !== undefined) pageData.connectTitle = connectTitle;
+      if (connectSubtitle !== undefined) pageData.connectSubtitle = connectSubtitle;
     }
 
-    res.status(200).json({ success: true, message: "Message section saved", data: pageData });
+    // --- HANDLE PHOTO REMOVAL/UPDATE ---
+    if (req.files && req.files['mdPhoto']) {
+      // New file uploaded: Replace old path
+      pageData.mdPhoto = req.files['mdPhoto'][0].path;
+    } else if (removePhoto === 'true') {
+      // User clicked 'X': Clear the path in DB
+      pageData.mdPhoto = null;
+    }
+
+    // --- HANDLE SIGNATURE REMOVAL/UPDATE ---
+    if (req.files && req.files['mdSignature']) {
+      // New file uploaded
+      pageData.mdSignature = req.files['mdSignature'][0].path;
+    } else if (removeSignature === 'true') {
+      // User clicked 'X'
+      pageData.mdSignature = null;
+    }
+
+    await pageData.save();
+    res.status(200).json({ success: true, message: "Changes saved", data: pageData });
 
   } catch (error) {
     console.error("Save Error:", error);

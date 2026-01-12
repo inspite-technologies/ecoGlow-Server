@@ -20,10 +20,10 @@ const AdvantagesPageSchema = new Schema(
 
     // --- Bottom CTA Section ---
     ctaImage: { type: String, default: null },    
-    ctaTitleLine1: { type: String, default: "We Promise – Excellence" },
-    ctaTitleLine2: { type: String, default: "in Every Home" },
-    ctaButtonText: { type: String, default: "Book Your Service" },
-    ctaWhatsappText: { type: String, default: "Connect with whatsapp" }
+    ctaTitleLine1: { type: String },
+    ctaTitleLine2: { type: String},
+    ctaButtonText: { type: String },
+    ctaWhatsappText: { type: String, }
   },
   { timestamps: true }
 );

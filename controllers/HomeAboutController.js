@@ -53,27 +53,28 @@ const updateHomeAbout = async (req, res) => {
       heroHighlightText,
       heroTitle,
       heroParagraphs,
-      items
+      vision,
+      mission,
+      values
     } = req.body;
 
     const updateData = {
       heroHighlightText,
       heroTitle,
-      heroParagraphs: heroParagraphs
-        ? JSON.parse(heroParagraphs)
-        : [],
-      items: items ? JSON.parse(items) : []
+      heroParagraphs: heroParagraphs ? JSON.parse(heroParagraphs) : [],
+      // Parse the three separate cards
+      vision: vision ? JSON.parse(vision) : undefined,
+      mission: mission ? JSON.parse(mission) : undefined,
+      values: values ? JSON.parse(values) : undefined,
     };
 
-    // image handling
     if (req.files?.valuesCommonImage?.[0]) {
-      updateData.valuesCommonImage =
-        req.files.valuesCommonImage[0].path;
+      updateData.valuesCommonImage = req.files.valuesCommonImage[0].path;
     }
 
     const updated = await HomeAbout.findOneAndUpdate(
       _id ? { _id } : {},
-      updateData,
+      { $set: updateData },
       { new: true, upsert: true }
     );
 

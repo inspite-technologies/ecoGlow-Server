@@ -16,6 +16,7 @@ import adminRoutes from "./routes/adminRoutes.js";
 import bookingRoutes from "./routes/bookingRoutes.js"
 import footerRoutes from "./routes/footerRouter.js"
 import commercialRoutes from "./routes/commercialRoutes.js"
+import headerRoutes from "./routes/headerRoutes.js"
 import cors from "cors";
 import path from "path";
 
@@ -55,6 +56,7 @@ app.use("/admin", adminRoutes);
 app.use("/contact",contactRoutes)
 app.use("/bookings",bookingRoutes)
 app.use("/footer",footerRoutes)
+app.use("/header",headerRoutes)
 
 
 app.listen(PORT, () => {

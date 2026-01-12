@@ -9,13 +9,13 @@ const FaqItemSchema = new mongoose.Schema({
 // --- Main Schema ---
 const FaqPageSchema = new mongoose.Schema({
   // 1. Hero Section
-  heroSmall: { type: String, default: "EcoGlow" },  // e.g. "EcoGlow"
-  heroLarge: { type: String, default: "FAQs" },     // e.g. "FAQs"
+  heroSmall: { type: String },  // e.g. "EcoGlow"
+  heroLarge: { type: String },     // e.g. "FAQs"
   heroBannerImg: { type: String, default: null },   // Optional banner image
 
   // 2. Intro / Section Header
-  sectionLabel: { type: String, default: "FAQs" },
-  sectionTitle: { type: String, default: "Before you choose a Cleaning Service" },
+  sectionLabel: { type: String },
+  sectionTitle: { type: String },
 
   // 3. The List of FAQs
   faqs: [FaqItemSchema]

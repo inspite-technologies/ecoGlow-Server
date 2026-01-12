@@ -2,19 +2,19 @@ import mongoose from "mongoose";
 
 const contactPageSchema = new mongoose.Schema({
   // Hero Banner Section
-  heroTitle: { type: String, default: "EcoGlow" },
-  heroSubtitle: { type: String, default: "Contact" },
+  heroTitle: { type: String },
+  heroSubtitle: { type: String },
   bannerImage: { type: String }, // Stores the path to the background image
 
   // Form & Text Section
-  formLabel: { type: String, default: "CONTACT US" },
-  formMainTitle: { type: String, default: "Write to us" },
+  formLabel: { type: String },
+  formMainTitle: { type: String},
   
   // Information Details
   contactInfo: {
-    address: { type: String, default: "Baghdad Street, Al Nahda 1, Dubai" },
-    phone: { type: String, default: "+971 4 123 4567" },
-    email: { type: String, default: "info@ecoglow.ae" }
+    address: { type: String },
+    phone: { type: String },
+    email: { type: String }
   },
 
   // Social Media Links - NEW SECTION

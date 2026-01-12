@@ -69,18 +69,17 @@ const updateServicesSection = async (req, res) => {
     let fullServices = await CommercialServices.findOne();
     if (!fullServices) fullServices = new CommercialServices();
 
+    // Files are available via multer (req.files)
     const files = req.files || [];
     
-    // ✅ DEBUG: Verify files are arriving
-    // console.log("Files Received:", files.map(f => f.fieldname));
-
+    // Extract text fields
     const {
       heroTitlePart1, heroTitlePart2, introLabel, introMainTitle,
       introDescription, introLongText, gridMainHeading, gridSubheading,
       trustedText, newsletterTitle, newsletterSubtitle,
     } = req.body;
 
-    // 1. Update Text Fields
+    // 1. Update Standard Text Fields (Only if sent)
     if (heroTitlePart1 !== undefined) fullServices.heroTitlePart1 = heroTitlePart1;
     if (heroTitlePart2 !== undefined) fullServices.heroTitlePart2 = heroTitlePart2;
     if (introLabel !== undefined) fullServices.introLabel = introLabel;
@@ -93,25 +92,36 @@ const updateServicesSection = async (req, res) => {
     if (newsletterTitle !== undefined) fullServices.newsletterTitle = newsletterTitle;
     if (newsletterSubtitle !== undefined) fullServices.newsletterSubtitle = newsletterSubtitle;
 
-    // 2. Update Single Images (Only if new file uploaded)
+    // 2. Update Single Images
     const introFile = files.find(f => f.fieldname === "introSideImage");
     if (introFile) fullServices.introSideImage = introFile.path;
 
     const bannerFile = files.find(f => f.fieldname === "bannerImage");
-    if (bannerFile) fullServices.bannerImage = bannerFile.path; // ✅ Update Banner
+    if (bannerFile) fullServices.bannerImage = bannerFile.path;
 
-    // 3. Update Services List & Images
+    // 3. Update Services List
     if (req.body.servicesList) {
-      let parsedList = JSON.parse(req.body.servicesList);
-      
+      let parsedList;
+      try {
+          // Handle case where it might already be an object vs a string
+          parsedList = typeof req.body.servicesList === 'string' 
+              ? JSON.parse(req.body.servicesList) 
+              : req.body.servicesList;
+      } catch (e) {
+          console.error("JSON Parse Error for servicesList:", e);
+          return res.status(400).json({ success: false, message: "Invalid JSON format for servicesList" });
+      }
+
+      // Map over the list. The frontend guarantees that if a file exists for item N,
+      // it is named 'serviceImage_N' in req.files.
       parsedList = parsedList.map((item, index) => {
         // Validation: Prevent empty title crash
-        if (!item.title || !item.title.trim()) item.title = " ";
+        if (!item.title || !item.title.trim()) item.title = "New Service";
 
         // Check for new file at this index
         const file = files.find(f => f.fieldname === `serviceImage_${index}`);
         
-        // If new file, use it. If not, keep existing path from frontend JSON
+        // If new file exists, update path. If not, preserve existing path (sent from frontend)
         if (file) {
             return { ...item, image: file.path };
         }
