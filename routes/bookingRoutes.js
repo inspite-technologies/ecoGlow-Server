@@ -9,6 +9,7 @@ const router = express.Router(); // Standard naming is 'router'
 // Define endpoints using .route() for a clean structure
 router.route("/")
   .get(getBooking)
-  .post(upload.single("heroBannerImage"),protectAdmin, upsertBooking);
+  .post(protectAdmin,upload.single("heroBannerImage"),upsertBooking);
+
 
 export default router;
