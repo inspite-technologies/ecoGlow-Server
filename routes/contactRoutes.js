@@ -9,6 +9,7 @@ const router = express.Router();
 router.get("/", getContactPage);
 
 // PUT  /contact -> Create OR Update (Upsert)
-router.put("/", multer.single("bannerImage"),protectAdmin, updateContactPage);
+router.put("/",protectAdmin, multer.single("bannerImage"), updateContactPage);
+
 
 export default router;
