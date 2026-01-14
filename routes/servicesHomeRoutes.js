@@ -8,14 +8,15 @@ const app = express.Router();
 // ---------------- ROUTES ----------------
 app.route("/").get(getServicesPage);
 
-app.route("/").post(
+app.route("/").post(protectAdmin,
   // This now uploads directly to Cloudinary based on field names
   upload.fields([
     { name: "card1Image", maxCount: 1 },
     { name: "card2Image", maxCount: 1 },
   ]),
-  protectAdmin,
+  
   saveServicesPage
 );
+
 
 export default app;
