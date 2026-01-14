@@ -7,7 +7,8 @@ const app = express.Router();
 
 app.get('/', getServicesSection);
 
-app.post('/', upload.any(),protectAdmin, createServicesSection);
-app.put('/', upload.any(),protectAdmin, updateServicesSection);
+app.post('/',protectAdmin, upload.any(), createServicesSection);
+app.put('/',protectAdmin, upload.any(), updateServicesSection);
+
 
 export default app;
