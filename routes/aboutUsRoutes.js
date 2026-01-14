@@ -8,8 +8,9 @@ import {
 import protectAdmin from "./middleWare/adminMiddleWare.js";
 const router = express.Router();
 
-router.post("/", upload.any(),protectAdmin, addAboutUsSection);
-router.put("/", upload.any(),protectAdmin, updateAboutUsSection);
+router.post("/",protectAdmin, upload.any(), addAboutUsSection);
+router.put("/",protectAdmin, upload.any(), updateAboutUsSection);
 router.get("/", getAboutUsSection);
 
 export default router;
+
