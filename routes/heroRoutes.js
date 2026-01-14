@@ -5,8 +5,9 @@ import protectAdmin from "./middleWare/adminMiddleWare.js";
 
 const app = express.Router();
 
-app.route("/").post(upload.any(), protectAdmin, createHero);
-app.route("/").put(upload.any(), protectAdmin, updateHero);
+app.route("/").post(protectAdmin,upload.any(),createHero);
+app.route("/").put(protectAdmin,upload.any(),updateHero);
 app.route("/").get(getHero);
+
 
 export default app;
