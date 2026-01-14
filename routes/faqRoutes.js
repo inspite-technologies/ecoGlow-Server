@@ -5,8 +5,9 @@ import upload from "../config/multer.js";
 
 const app = express.Router();
 
-app.route("/").post(upload.any(), protectAdmin, createFaqPage);
-app.route("/").put(upload.any(), protectAdmin, updateFaqPage);
+app.route("/").post(protectAdmin,upload.any(),createFaqPage);
+app.route("/").put(protectAdmin,upload.any(),  updateFaqPage);
 app.route("/").get(getFaqPage);
+
 
 export default app;
