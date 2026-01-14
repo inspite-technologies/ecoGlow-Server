@@ -10,7 +10,7 @@ export const deleteFile = (filePath) => {
     if (err) {
       console.error("File delete failed:", absolutePath, err.message);
     } else {
-      console.log("Deleted file:", absolutePath);
+      console.error("Deleted file:", absolutePath);
     }
   });
 };

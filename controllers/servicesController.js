@@ -66,53 +66,80 @@
 
   const updateServicesSection = async (req, res) => {
   try {
+    // 1. Find or Create the Document (Singleton approach)
     let fullServices = await FullServices.findOne();
-    if (!fullServices) fullServices = new FullServices();
+    if (!fullServices) {
+      fullServices = new FullServices();
+    }
 
     const files = req.files || [];
-    const { /* ... other fields ... */ } = req.body;
+    const body = req.body;
 
-    // 1. Text Field Updates (Same as your current code)
-    // fullServices.heroTitlePart1 = heroTitlePart1; ... etc
+    // --- 2. Update Simple Text Fields ---
+    // We check if the field exists in body before updating to avoid overwriting with undefined
+    if (body.heroTitlePart1 !== undefined) fullServices.heroTitlePart1 = body.heroTitlePart1;
+    if (body.heroTitlePart2 !== undefined) fullServices.heroTitlePart2 = body.heroTitlePart2;
+    
+    if (body.introLabel !== undefined) fullServices.introLabel = body.introLabel;
+    if (body.introMainTitle !== undefined) fullServices.introMainTitle = body.introMainTitle;
+    if (body.introDescription !== undefined) fullServices.introDescription = body.introDescription;
+    if (body.introLongText !== undefined) fullServices.introLongText = body.introLongText;
+    
+    if (body.gridMainHeading !== undefined) fullServices.gridMainHeading = body.gridMainHeading;
+    if (body.gridSubheading !== undefined) fullServices.gridSubheading = body.gridSubheading;
+    
+    if (body.trustedText !== undefined) fullServices.trustedText = body.trustedText;
+    if (body.newsletterTitle !== undefined) fullServices.newsletterTitle = body.newsletterTitle;
+    if (body.newsletterSubtitle !== undefined) fullServices.newsletterSubtitle = body.newsletterSubtitle;
 
-    // 2. Single Image Updates
-    const introFile = files.find(f => f.fieldname === "introSideImage");
-    if (introFile) fullServices.introSideImage = introFile.path;
-
+    // --- 3. Update Static Images (Banner & Intro) ---
+    // Multer puts files in req.files array. We search by fieldname.
+    
     const bannerFile = files.find(f => f.fieldname === "bannerImage");
-    if (bannerFile) fullServices.bannerImage = bannerFile.path;
+    if (bannerFile) {
+      fullServices.bannerImage = bannerFile.path; // Works for Cloudinary or Local
+    }
 
-    // 3. Reordering & Image Mapping logic
-    if (req.body.servicesList) {
-      let parsedList = JSON.parse(req.body.servicesList);
-      
-      fullServices.servicesList = parsedList.map((item) => {
-        // Find if there is a file uploaded specifically for THIS card ID
-        const file = files.find(f => f.fieldname === `serviceImage_${item.id}`);
-        
+    const introFile = files.find(f => f.fieldname === "introSideImage");
+    if (introFile) {
+      fullServices.introSideImage = introFile.path;
+    }
+
+    // --- 4. Update Dynamic Services List ---
+    if (body.servicesList) {
+      // Frontend sends stringified JSON, so we parse it
+      let parsedList = JSON.parse(body.servicesList);
+
+      fullServices.servicesList = parsedList.map((item, index) => {
+        // ✅ THE FIX: Look for file using the INDEX (serviceImage_0, serviceImage_1)
+        // This matches exactly how the React Frontend sends the FormData.
+        const file = files.find(f => f.fieldname === `serviceImage_${index}`);
+
         return {
-          ...item,
-          // If a new file exists, use its path, otherwise keep the old path
+          title: item.title || "",
+          subtitle: item.subtitle || "",
+          desc: item.desc || "", // Ensure 'desc' is mapped if your schema uses it
+          // If a new file was uploaded, use it. Otherwise, keep the existing string.
           image: file ? file.path : item.image 
         };
       });
     }
 
+    // 5. Save and Return
     await fullServices.save();
     res.status(200).json({ success: true, data: fullServices });
 
   } catch (error) {
+    console.error("Error updating services:", error);
     res.status(500).json({ success: false, error: error.message });
   }
 };
-
   const getServicesSection = async (req, res) => {
     try {
       const fullServices = await FullServices.findOne();
       if (!fullServices) {
         return res.status(404).json({ success: false, message: "Services section not found" });
       }
-      console.log("services...",fullServices);
       
       
       res.status(200).json({ success: true, data: fullServices });

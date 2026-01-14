@@ -58,43 +58,94 @@ const updateHomeAbout = async (req, res) => {
       values
     } = req.body;
 
+    // 1. Initialize the update object with simple text fields
     const updateData = {
       heroHighlightText,
       heroTitle,
-      heroParagraphs: heroParagraphs ? JSON.parse(heroParagraphs) : [],
-      // Parse the three separate cards
-      vision: vision ? JSON.parse(vision) : undefined,
-      mission: mission ? JSON.parse(mission) : undefined,
-      values: values ? JSON.parse(values) : undefined,
     };
 
-    if (req.files?.valuesCommonImage?.[0]) {
-      updateData.valuesCommonImage = req.files.valuesCommonImage[0].path;
+    // 2. Safe Parsing Helper (Prevents crashes if JSON is invalid)
+    const safeParse = (data) => {
+      try {
+        return data ? JSON.parse(data) : undefined;
+      } catch (e) {
+        console.error("JSON Parse Error:", e);
+        return []; // Return empty array or undefined on error
+      }
+    };
+
+    // 3. Parse complex fields
+    if (heroParagraphs) updateData.heroParagraphs = safeParse(heroParagraphs);
+    if (vision) updateData.vision = safeParse(vision);
+    if (mission) updateData.mission = safeParse(mission);
+    if (values) updateData.values = safeParse(values);
+
+    // 4. IMAGE HANDLING (The Fix for upload.any())
+    // upload.any() returns an Array, not an Object. We must find the file manually.
+    if (req.files && Array.isArray(req.files)) {
+      
+      // Look for the file with fieldname 'valuesCommonImage'
+      const commonImage = req.files.find(file => file.fieldname === 'valuesCommonImage');
+      
+      if (commonImage) {
+        // Save the Cloudinary URL to the database
+        updateData.valuesCommonImage = commonImage.path;
+      }
     }
 
+    // 5. Update Database
+    // If _id exists, find by ID. If not, find the first document or create one.
+    const query = _id ? { _id } : {};
+    
     const updated = await HomeAbout.findOneAndUpdate(
-      _id ? { _id } : {},
+      query,
       { $set: updateData },
-      { new: true, upsert: true }
+      { 
+        new: true,   // Return the updated document
+        upsert: true // Create if it doesn't exist
+      }
     );
 
     res.status(200).json(updated);
+
   } catch (error) {
     console.error("About update error:", error);
-    res.status(500).json({ message: "Update failed" });
+    res.status(500).json({ message: "Update failed", error: error.message });
   }
 };
 
 // --- GET ---
 const getHomeAboutSection = async (req, res) => {
+  const startTime = Date.now();
+  console.log(`🕐 API Start Time: ${new Date().toISOString()}`);
+  
   try {
+    console.log("📍 getHomeAboutSection API called");
     const homeAbout = await HomeAbout.findOne();
+    console.log("✅ Data fetched:", homeAbout);
+    
     if (!homeAbout) {
+      console.warn("⚠️ HomeAbout section not found");
+      const endTime = Date.now();
+      const duration = endTime - startTime;
+      console.log(`⏱️ API End Time: ${new Date().toISOString()}`);
+      console.log(`⏳ Total Duration: ${duration}ms`);
       return res.status(404).json({ success: false, message: "Section not found" });
     }
+    
+    console.log("✔️ Returning HomeAbout data successfully");
+    const endTime = Date.now();
+    const duration = endTime - startTime;
+    console.log(`⏱️ API End Time: ${new Date().toISOString()}`);
+    console.log(`⏳ Total Duration: ${duration}ms`);
+    
     res.status(200).json({ success: true, data: homeAbout });
   } catch (error) {
-    console.error("Get Error:", error);
+    const endTime = Date.now();
+    const duration = endTime - startTime;
+    console.error("❌ Get Error:", error);
+    console.log(`⏱️ API End Time: ${new Date().toISOString()}`);
+    console.log(`⏳ Total Duration: ${duration}ms`);
     res.status(500).json({ success: false, message: "Failed to fetch", error: error.message });
   }
 };

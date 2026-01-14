@@ -146,7 +146,6 @@ const getServicesSection = async (req, res) => {
     if (!fullServices) {
       return res.status(404).json({ success: false, message: "Services section not found" });
     }
-    console.log("services...",fullServices);
     
     
     res.status(200).json({ success: true, data: fullServices });

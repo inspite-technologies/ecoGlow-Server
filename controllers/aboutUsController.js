@@ -96,9 +96,6 @@ const addAboutUsSection = async (req, res) => {
 // --- UPDATE About Us Section ---
 const updateAboutUsSection = async (req, res) => {
   try {
-    console.log("Body Fields:", req.body); // Should show text fields
-    console.log("Files Received:", req.files); // Should be an array of files
-    // ----------------------
     const aboutUs = await AboutUs.findOne();
     if (!aboutUs) return res.status(404).json({ success: false, message: "About Us not found" });
 

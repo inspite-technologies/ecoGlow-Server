@@ -100,7 +100,6 @@ const updatePackages = async (req, res) => {
         const bannerFile = req.files.find(f => f.fieldname === 'heroBannerImg');
         
         if (bannerFile) {
-            console.log("✅ Image File Found:", bannerFile.path);
             packagesDoc.heroBannerImg = bannerFile.path; // Save the path to DB
         }
     }
@@ -125,8 +124,6 @@ const updatePackages = async (req, res) => {
 
     // 5. Save
     await packagesDoc.save();
-    console.log("💾 Saved Successfully");
-
     res.status(200).json({
       success: true,
       message: "Packages updated successfully",

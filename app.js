@@ -12,6 +12,7 @@ import bannerRoutes from "./routes/homeBannerRoutes.js";
 import advantagesRoutes from "./routes/advantagesRoutes.js";
 import messageRouters from "./routes/messageRoutes.js";
 import contactRoutes from "./routes/contactRoutes.js"
+import homeRoutes from './routes/homeRoutes.js'
 import adminRoutes from "./routes/adminRoutes.js";
 import bookingRoutes from "./routes/bookingRoutes.js"
 import footerRoutes from "./routes/footerRouter.js"
@@ -52,6 +53,7 @@ app.use("/home-services", homeServicesRoutes);
 app.use("/banner", bannerRoutes);
 app.use("/advantages", advantagesRoutes);
 app.use("/message", messageRouters);
+app.use("/home-content", homeRoutes);
 app.use("/admin", adminRoutes);
 app.use("/contact",contactRoutes)
 app.use("/bookings",bookingRoutes)
