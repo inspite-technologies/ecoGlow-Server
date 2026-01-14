@@ -15,12 +15,17 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: async (req, file) => {
-    // Optional: Organize files into folders on Cloudinary based on the route
-    // You can customize this logic if you want specific folders for specific routes
     return {
-      folder: 'eco-glow-uploads', // The folder name in your Cloudinary dashboard
-      resource_type: 'auto',      // Auto-detect (image, video, etc.)
+      folder: 'eco-glow-uploads',
+      resource_type: 'auto',
       public_id: `${Date.now()}-${file.originalname.split('.')[0]}`,
+      
+      // 👇 THIS BLOCK REDUCES THE SIZE
+      transformation: [
+        { width: 1000, crop: "limit" }, // If image is >1000px, shrink it.
+        { quality: "auto" },            // Smart compression (visually same, file much smaller)
+        { fetch_format: "auto" }        // Convert to WebP (faster loading)
+      ]
     };
   },
 });
@@ -28,3 +33,4 @@ const storage = new CloudinaryStorage({
 const upload = multer({ storage: storage });
 
 export default upload;
+
